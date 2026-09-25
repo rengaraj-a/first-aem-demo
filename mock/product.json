@@ -1,0 +1,8 @@
+{
+  "sku": "VT12",
+  "name": "Jillian Top",
+  "description": "Sample product data for the EDS learning exercise.",
+  "price": 46.4,
+  "currency": "USD",
+  "stock_status": "IN_STOCK"
+}

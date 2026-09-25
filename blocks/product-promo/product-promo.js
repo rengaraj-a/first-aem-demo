@@ -1,31 +1,61 @@
-export default function decorate(block) {
-  const rows = [...block.children];
+async function getProduct() {
+  const response = await fetch('/mock/product.json');
 
-  const getValue = (label) => {
-    const row = rows.find(
-      (item) => item.children[0]?.textContent.trim() === label,
-    );
+  if (!response.ok) {
+    throw new Error(`Product request failed: ${response.status}`);
+  }
 
-    return row?.children[1];
-  };
+  return response.json();
+}
 
-  const productName = getValue('Product Name')?.textContent.trim() || '';
-  const description = getValue('Description')?.textContent.trim() || '';
-  const price = getValue('Price')?.textContent.trim() || '';
-  const ctaCell = getValue('CTA');
+export default async function decorate(block) {
+  const ctaLink = block.querySelector('a');
 
-  const link = ctaCell?.querySelector('a');
+  block.innerHTML = '<p>Loading product...</p>';
 
-  block.innerHTML = `
-    <div class="product-promo-content">
-      <h2>${productName}</h2>
-      <p>${description}</p>
-      <strong>${price}</strong>
-    </div>
-  `;
+  try {
+    const product = await getProduct();
 
-  if (link) {
-    link.className = 'product-promo-button';
-    block.querySelector('.product-promo-content').append(link);
+    const formattedPrice = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: product.currency,
+    }).format(product.price);
+
+    block.innerHTML = `
+      <div class="product-promo-content">
+        <h2>${product.name}</h2>
+
+        <p>${product.description}</p>
+
+        <p>
+          <strong>SKU:</strong>
+          ${product.sku}
+        </p>
+
+        <p>
+          <strong>Price:</strong>
+          ${formattedPrice}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+          ${product.stock_status}
+        </p>
+      </div>
+    `;
+
+    if (ctaLink) {
+      ctaLink.className = 'product-promo-button';
+      ctaLink.textContent = 'View Product';
+      block.querySelector('.product-promo-content').append(ctaLink);
+    }
+  } catch (error) {
+    console.error('Product loading error:', error);
+
+    block.innerHTML = `
+      <div class="product-promo-error">
+        Unable to load product information.
+      </div>
+    `;
   }
 }

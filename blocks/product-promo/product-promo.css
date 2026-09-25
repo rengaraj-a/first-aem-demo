@@ -1,0 +1,28 @@
+.product-promo {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #eaf4ff;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.product-promo h2 {
+  color: #1261a0;
+  margin-bottom: 12px;
+}
+
+.product-promo strong {
+  display: block;
+  margin: 20px 0;
+  font-size: 24px;
+}
+
+.product-promo-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #1261a0;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}
